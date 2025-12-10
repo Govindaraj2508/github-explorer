@@ -2,15 +2,15 @@ import React, { useState, useMemo, useEffect } from 'react'
 import { useGetUserQuery } from '../../common/services/apiServices';
 import './Users.css';
 
-function Users({searchedusers, isSearchUserLoading, isSearchUserError, searchTerm}) {
+function UsersTest({searchedusers, isSearchUserLoading, isSearchUserError, searchTerm}) {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const {data: users, isLoading, isError, error} = useGetUserQuery();
   
-  let usersToDisplay = searchTerm ? searchedusers : users;
+  const usersToDisplay = searchTerm ? searchedusers : users;
   
-  const paginatedData = useMemo(() => {
+  const paginatedData = useMemo((items, totalPages) => {
     if (!usersToDisplay) return { items: [], totalPages: 0 };
     
     const startIndex = (currentPage - 1) * itemsPerPage;
@@ -57,9 +57,10 @@ function Users({searchedusers, isSearchUserLoading, isSearchUserError, searchTer
     return pages;
   };
 
-useEffect(() => {
+  useEffect(() => {
     setCurrentPage(1);
-}, [searchTerm]);
+    paginatedData = { items: searchedusers, totalPages: 0 };
+  }, [searchTerm]);
 
   // Show search loading state
   if (isSearchUserLoading) {
@@ -82,12 +83,13 @@ useEffect(() => {
   // Show search error
   if (isSearchUserError) {
     return (
-      <div className="users-container">
+      <div className="users-container"> 
         <div className="error">Error: Failed to search users</div>
       </div>
     );
   }
 
+  // Show general error
   if (isError) {
     return (
       <div className="users-container">
@@ -99,7 +101,7 @@ useEffect(() => {
   // Show no results message
   if (!usersToDisplay || usersToDisplay.length === 0) {
     return (
-      <div className="users-container"> 
+      <div className="users-container">
         <div className="no-results">
           {searchTerm ? `No users found matching "${searchTerm}"` : 'No users available'}
         </div>
@@ -199,4 +201,4 @@ useEffect(() => {
   )
 }
 
-export default Users;
+export default UsersTest;
