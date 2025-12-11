@@ -1,6 +1,7 @@
 import {createApi, fetchBaseQuery} from '@reduxjs/toolkit/query/react';
+import getToken from './token'
 
-const PATToken = 'Bearer ***REMOVED***';
+const PATToken = `Bearer ${getToken()}` ;
 export const apiServices = createApi({
  reducerPath: 'apiServices',
   baseQuery: fetchBaseQuery({
